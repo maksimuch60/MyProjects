@@ -1,0 +1,229 @@
+#include <iostream>
+#include "Shape.h"
+using namespace std;
+
+
+Shape::Shape(int* arr, int row)
+{
+	PointArr = new int[row * 2];
+}
+
+class Circle : public Shape
+{
+public:
+	int radius;
+	Circle(int rad, int* arr) : Shape(arr, 1)
+	{
+		radius = rad;
+		angle = 360;
+		typeOfShape = "Circle";
+		for (int i = 0; i < 1; i++)
+		{
+			PointArr[i] = arr[i];
+			PointArr[i + 1] = arr[i + 1];
+		}
+	}
+	static int getRadius(Circle obj)
+	{
+		return obj.radius;
+	}
+
+	void show()
+	{
+		cout << this->typeOfShape << ", radius: " << this->radius << ", angle: " << this->angle << endl;
+		cout << "Point of centre: x = " << this->PointArr[0] << " y = " << this->PointArr[1] << endl;
+	}
+
+};
+
+class Square : public Shape
+{
+public:
+	Square(int* arr) :Shape(arr, 4)
+	{
+		angle = 360;
+		typeOfShape = "Square";
+		for (int i = 0; i < 8; i += 2)
+		{
+			PointArr[i] = arr[i];
+			PointArr[i + 1] = arr[i + 1];
+		}
+	}
+	void show()
+	{
+		cout << this->typeOfShape << ", angle: " << this->angle << endl;
+		for (int i = 0; i < 8; i += 2)
+		{
+			cout << "Point of vertex: x = " << this->PointArr[i] << " y = " << this->PointArr[i + 1] << endl;
+		}
+	}
+};
+
+class Triangle :public Shape
+{
+public:
+	Triangle(int* arr) :Shape(arr, 3)
+	{
+		angle = 180;
+		typeOfShape = "Triangle";
+		for (int i = 0; i < 6; i += 2)
+		{
+			PointArr[i] = arr[i];
+			PointArr[i + 1] = arr[i + 1];
+		}
+	}
+	void show()
+	{
+		cout << this->typeOfShape << ", angle: " << this->angle << endl;
+		for (int i = 0; i < 6; i += 2)
+		{
+			cout << "Point of vertex: x = " << this->PointArr[i] << " y = " << this->PointArr[i + 1] << endl;
+		}
+	}
+};
+
+bool intersect(Shape obj1, Shape obj2)
+{
+	bool position = false;
+	int n = 0;
+	for (int i = 0; i < sizeof(obj1.PointArr) + 2; i += 2)
+	{
+		for (int j = 0; j < sizeof(obj2.PointArr) + 2; j += 2)
+		{
+			if ((((obj1.PointArr[j + 1] <= obj2.PointArr[j + 1]) && (obj2.PointArr[j + 1] < obj1.PointArr[n + 3])) || ((obj1.PointArr[n + 3] <= obj2.PointArr[j + 1]) && (obj2.PointArr[j + 1] < obj1.PointArr[j + 1]))) && (((obj1.PointArr[n + 3] - obj1.PointArr[j + 1]) != 0) && (obj2.PointArr[j] > ((obj1.PointArr[n + 2] - obj1.PointArr[j]) * (obj2.PointArr[j + 1] - obj1.PointArr[j + 1]) / (obj1.PointArr[n + 3] - obj1.PointArr[j + 1]) + obj1.PointArr[j]))))
+				position = !position;
+			n += 2;
+			if (n == 6)
+				n = 0;
+		}
+	}
+	return position;
+}
+
+bool intersectC(Shape obj1, Shape obj2, int rad)
+{
+	for (int i = 0; i < sizeof(obj2.PointArr); i += 2)
+	{
+		if (sqrt(abs(obj2.PointArr[i] - obj1.PointArr[0]) * abs(obj2.PointArr[i] - obj1.PointArr[0]) + abs(obj2.PointArr[i + 1] - obj1.PointArr[1]) * abs(obj2.PointArr[i + 1] - obj1.PointArr[1])) <= rad)
+			return true;
+	}
+	return false;
+}
+
+int main()
+{
+	int rad, * arr = new int[2];
+	cout << "Create a circle" << endl;
+	cout << "Enter radius: ";
+	cin >> rad;
+	while (rad <= 1)
+	{
+		cin.clear();
+		cin.ignore(32767, '\n');
+		cout << "Enter correctly\n";
+		cin >> rad;
+	}
+	cout << "Enter coordinates of center: " << endl;
+	for (int i = 0; i < 2; i += 2)
+	{
+		cout << "x = ";
+		cin >> arr[i];
+		while (rad <= 1)
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			cout << "Enter correctly\n";
+			cin >> arr[i];
+		}
+		cout << "y = ";
+		cin >> arr[i + 1];
+		while (rad <= 1)
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			cout << "Enter correctly\n";
+			cin >> arr[i + 1];
+		}
+	}
+	Circle* circle1 = new Circle(rad, arr);
+	delete[] arr;
+	circle1->show();
+	arr = new int[8];
+	cout << "Create a square" << endl;
+	cout << "Enter coordinates of vertexes: " << endl;
+	for (int i = 0; i < 8; i += 2)
+	{
+		cout << "x = ";
+		cin >> arr[i];
+		while (rad <= 1)
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			cout << "Enter correctly\n";
+			cin >> arr[i];
+		}
+		cout << "y = ";
+		cin >> arr[i + 1];
+		while (rad <= 1)
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			cout << "Enter correctly\n";
+			cin >> arr[i + 1];
+		}
+	}
+	Square* square1 = new Square(arr);
+	delete[] arr;
+	square1->show();
+	arr = new int[6];
+	cout << "Create a triangle" << endl;
+	cout << "Enter coordinates of vertexes: " << endl;
+	for (int i = 0; i < 6; i += 2)
+	{
+		cout << "x = ";
+		cin >> arr[i];
+		while (rad <= 1)
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			cout << "Enter correctly\n";
+			cin >> arr[i];
+		}
+		cout << "y = ";
+		cin >> arr[i + 1];
+		while (rad <= 1)
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			cout << "Enter correctly\n";
+			cin >> arr[i + 1];
+		}
+	}
+	Triangle* triangle1 = new Triangle(arr);
+	delete[] arr;
+	triangle1->show();
+	int choice;
+	while (true)
+	{
+		cout << "Select 2 of 3 shapes to compare to intersection\n1 - circle and square\n2 - circle and triangle\n3 - square and triangle\nAnother - Exit\n";
+		cin >> choice;
+		string result;
+		switch (choice)
+		{
+		case 1:
+			intersectC(*circle1, *square1, Circle::getRadius(*circle1)) ? result = "Intersect\n" : result = "Not intersect\n";
+			cout << result;
+			break;
+		case 2:
+			intersectC(*circle1, *triangle1, Circle::getRadius(*circle1)) ? result = "Intersect\n" : result = "Not intersect\n";
+			cout << result;
+			break;
+		case 3:
+			intersect(*square1, *triangle1) ? result = "Intersect\n" : result = "Not intersect\n";
+			cout << result;
+			break;
+		default:
+			return 0;
+		}
+	}
+}
