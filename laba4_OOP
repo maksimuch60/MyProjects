@@ -1,7 +1,18 @@
 #include <iostream>
-#include "Shape.h"
 using namespace std;
 
+class Shape
+{
+protected:
+	int* PointArr;
+	int angle;
+	std::string typeOfShape;
+public:
+	void show();
+	Shape(int*, int);
+	friend bool intersect(Shape, Shape);
+	friend bool intersectC(Shape, Shape, int);
+};
 
 Shape::Shape(int* arr, int row)
 {
